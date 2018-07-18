@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  gather_facts: true
+  connection: local
+  roles:
+    # - role: awscli
+    - role: aws_ou
+    - role: aws_account
+    
+    
+    
+
+

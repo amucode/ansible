@@ -1,0 +1,14 @@
+---
+- name: List all account's under root OU
+  shell: "aws organizations list-accounts --output table"
+
+- name: Create AWS account's 
+  command: aws organizations create-account --email {{ item.email }}  --account-name {{ item.name }}
+  with_items: 
+    - { email: user1@example.com , name: user1  }
+    - { email: user2@example.com , name: user2  }
+  ignore_errors: yes
+
+- name: List all Newly created account's 
+  shell: "aws organizations list-accounts --output table"
+ 

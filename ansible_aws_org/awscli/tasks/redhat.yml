@@ -1,0 +1,55 @@
+- name: upgrade all packages
+  yum: 
+    name: "*"
+    state: latest
+
+- name: Install Python 
+  yum: 
+    pkg: python 
+    state: installed
+    update_cache: yes
+  tags: aws    
+    
+- name: Install Python PIP
+  yum: 
+    pkg: python-pip 
+    state: installed
+    update_cache: yes
+  tags: aws
+
+- name: Install AWS CLI
+  pip: 
+    name: awscli 
+    state: latest
+  tags: aws  
+
+- name: Enable TAB completion for awscli
+  lineinfile:
+    dest: "/home/ec2-user/.bashrc"
+    line: "complete -C aws_completer aws"
+    state: present
+  tags: aws
+
+- name: Ensure .aws directory under user home for awscli config 
+  file:  
+    path: /home/ec2-user/.aws
+    state: directory
+    owner: "ec2-user"
+    mode: 0700
+  tags: aws
+
+- name: Copy awscli config to remote server
+  template:  
+    src: awscli_config.j2
+    dest: "/home/ec2-user/.aws/config" 
+    owner: "ec2-user"
+    mode: 0600
+  tags: aws
+
+- name: Copy awscli Credential to remote server
+  template:  
+    src: awscli_credentials.j2
+    dest: "/home/ec2-user/.aws/credentials" 
+    owner: "ec2-user"
+    mode: 0600
+  tags: aws

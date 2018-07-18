@@ -1,0 +1,21 @@
+---
+- name: Identifying Root account component
+  shell: "aws organizations list-roots --output text"
+
+- name: capturing root account id
+  shell: aws organizations list-roots --query Roots[].Id --output text 
+  register: root_account_id
+
+- name: creating Organization Unit under Root Account
+  command: aws organizations create-organizational-unit --parent-id {{ root_account_id.stdout }} --name {{ item }}
+  with_items:
+    - oncorps
+    - dxc-dev
+    - dxc-beta
+    - dxc-prod
+    - nat-dev
+    - nat-beta
+    - nat-prod
+  ignore_errors: yes
+  
+
